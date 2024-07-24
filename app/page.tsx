@@ -1,12 +1,15 @@
-// 00.31.59.
+// 00.59.00.
 
-import { Button } from "@/components/ui/button";
-import Image from "next/image";
+import { Categories, Container, Title } from "@/components/shared";
 
 export default function Home() {
   return (
     <>
-      <h1>Home</h1>
+      <Container className='mt-10 '>
+        <Title text='Все пиццы' size='lg' className='font-extrabold' />
+
+        <Categories />
+      </Container>
     </>
   );
 }
