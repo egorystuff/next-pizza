@@ -1,6 +1,6 @@
-// 00.59.00.
+// 02.16.48.
 
-import { Container, Filters, ProductCard, Title, TopBar } from "@/components/shared";
+import { Container, Filters, ProductCard, ProductsGroupList, Title, TopBar } from "@/components/shared";
 
 export default function Home() {
   return (
@@ -19,7 +19,138 @@ export default function Home() {
 
           <div className='flex-1'>
             <div className='flex flex-col gap-16'>
-              <ProductCard id={1} name='Пицца' price={500} imageUrl='/pizza.png' />
+              <ProductsGroupList
+                title='Пиццы'
+                categoryId={1}
+                items={[
+                  {
+                    id: 1,
+                    name: "Аррива!",
+                    imageUrl: "https://media.dodostatic.net/image/r:292x292/11EF1EB095B2BBDE8E1230BD91995D9D.avif",
+                    price: 500,
+                    items: [{ price: 500 }],
+                  },
+                  {
+                    id: 2,
+                    name: "Аррива!",
+                    imageUrl: "https://media.dodostatic.net/image/r:292x292/11EF1EB095B2BBDE8E1230BD91995D9D.avif",
+                    price: 500,
+                    items: [{ price: 500 }],
+                  },
+                  {
+                    id: 3,
+                    name: "Аррива!",
+                    imageUrl: "https://media.dodostatic.net/image/r:292x292/11EF1EB095B2BBDE8E1230BD91995D9D.avif",
+                    price: 500,
+                    items: [{ price: 500 }],
+                  },
+                  {
+                    id: 4,
+                    name: "Аррива!",
+                    imageUrl: "https://media.dodostatic.net/image/r:292x292/11EF1EB095B2BBDE8E1230BD91995D9D.avif",
+                    price: 500,
+                    items: [{ price: 500 }],
+                  },
+                  {
+                    id: 5,
+                    name: "Аррива!",
+                    imageUrl: "https://media.dodostatic.net/image/r:292x292/11EF1EB095B2BBDE8E1230BD91995D9D.avif",
+                    price: 500,
+                    items: [{ price: 500 }],
+                  },
+                  {
+                    id: 6,
+                    name: "Аррива!",
+                    imageUrl: "https://media.dodostatic.net/image/r:292x292/11EF1EB095B2BBDE8E1230BD91995D9D.avif",
+                    price: 500,
+                    items: [{ price: 500 }],
+                  },
+                  {
+                    id: 7,
+                    name: "Аррива!",
+                    imageUrl: "https://media.dodostatic.net/image/r:292x292/11EF1EB095B2BBDE8E1230BD91995D9D.avif",
+                    price: 500,
+                    items: [{ price: 500 }],
+                  },
+                  {
+                    id: 8,
+                    name: "Аррива!",
+                    imageUrl: "https://media.dodostatic.net/image/r:292x292/11EF1EB095B2BBDE8E1230BD91995D9D.avif",
+                    price: 500,
+                    items: [{ price: 500 }],
+                  },
+                  {
+                    id: 9,
+                    name: "Аррива!",
+                    imageUrl: "https://media.dodostatic.net/image/r:292x292/11EF1EB095B2BBDE8E1230BD91995D9D.avif",
+                    price: 500,
+                    items: [{ price: 500 }],
+                  },
+                ]}
+              />
+
+              <ProductsGroupList
+                title='Закуски'
+                categoryId={1}
+                items={[
+                  {
+                    id: 1,
+                    name: "Аррива!",
+                    imageUrl: "https://media.dodostatic.net/image/r:292x292/11EE796EB06663DFACF37FEF7041EE39.avif",
+                    price: 500,
+                    items: [{ price: 500 }],
+                  },
+                  {
+                    id: 2,
+                    name: "Аррива!",
+                    imageUrl: "https://media.dodostatic.net/image/r:292x292/11EE796EB06663DFACF37FEF7041EE39.avif",
+                    price: 500,
+                    items: [{ price: 500 }],
+                  },
+                  {
+                    id: 3,
+                    name: "Аррива!",
+                    imageUrl: "https://media.dodostatic.net/image/r:292x292/11EE796EB06663DFACF37FEF7041EE39.avif",
+                    price: 500,
+                    items: [{ price: 500 }],
+                  },
+                  {
+                    id: 4,
+                    name: "Аррива!",
+                    imageUrl: "https://media.dodostatic.net/image/r:292x292/11EE796EB06663DFACF37FEF7041EE39.avif",
+                    price: 500,
+                    items: [{ price: 500 }],
+                  },
+                  {
+                    id: 5,
+                    name: "Аррива!",
+                    imageUrl: "https://media.dodostatic.net/image/r:292x292/11EE796EB06663DFACF37FEF7041EE39.avif",
+                    price: 500,
+                    items: [{ price: 500 }],
+                  },
+                  {
+                    id: 6,
+                    name: "Аррива!",
+                    imageUrl: "https://media.dodostatic.net/image/r:292x292/11EE796EB06663DFACF37FEF7041EE39.avif",
+                    price: 500,
+                    items: [{ price: 500 }],
+                  },
+                  {
+                    id: 7,
+                    name: "Аррива!",
+                    imageUrl: "https://media.dodostatic.net/image/r:292x292/11EE796EB06663DFACF37FEF7041EE39.avif",
+                    price: 500,
+                    items: [{ price: 500 }],
+                  },
+                  {
+                    id: 8,
+                    name: "Аррива!",
+                    imageUrl: "https://media.dodostatic.net/image/r:292x292/11EE796EB06663DFACF37FEF7041EE39.avif",
+                    price: 500,
+                    items: [{ price: 500 }],
+                  },
+                ]}
+              />
             </div>
           </div>
         </div>
