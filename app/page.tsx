@@ -1,6 +1,6 @@
 // 00.59.00.
 
-import { Container, Filters, Title, TopBar } from "@/components/shared";
+import { Container, Filters, ProductCard, Title, TopBar } from "@/components/shared";
 
 export default function Home() {
   return (
@@ -18,7 +18,9 @@ export default function Home() {
           </div>
 
           <div className='flex-1'>
-            <div className='flex flex-col gap-16'>Product list</div>
+            <div className='flex flex-col gap-16'>
+              <ProductCard id={1} name='Пицца' price={500} imageUrl='/pizza.png' />
+            </div>
           </div>
         </div>
       </Container>
