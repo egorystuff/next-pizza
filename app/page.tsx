@@ -1,4 +1,4 @@
-// 02.16.48.
+// 02.46.48.
 
 import { Container, Filters, ProductCard, ProductsGroupList, Title, TopBar } from "@/components/shared";
 
@@ -90,8 +90,8 @@ export default function Home() {
               />
 
               <ProductsGroupList
-                title='Закуски'
-                categoryId={1}
+                title='Комбо'
+                categoryId={2}
                 items={[
                   {
                     id: 1,
