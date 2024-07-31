@@ -20,7 +20,8 @@ model User {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  cart Cart[]
+  cart  Cart[]
+  order Order[]
 }
 
 // --------------------------------------------------------------------------------
@@ -123,4 +124,13 @@ model CartItem {
   cartId Int
 
   ingridients Ingredient[]
+}
+
+model Order {
+  id Int @id @default(autoincrement())
+
+  user   User? @relation(fields: [userId], references: [id])
+  userId Int
+
+  token String
 }
