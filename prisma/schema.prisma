@@ -9,19 +9,28 @@ datasource db {
 }
 
 // --------------------------------------------------------------------------------
+// --------------------------------------------------------------------------------
+// --------------------------------------------------------------------------------
+// --------------------------------------------------------------------------------
 
 model User {
   id Int @id @default(autoincrement())
 
   fullName String
-  email    String @unique
+  email    String   @unique
   password String
+  role     UserRole @default(USER)
+  verified DateTime
+
+  provider   String?
+  providerId String?
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  cart  Cart[]
-  order Order[]
+  cart             Cart?
+  orders           Order[]
+  verificationCode VerificationCode?
 }
 
 // --------------------------------------------------------------------------------
@@ -102,7 +111,7 @@ model Cart {
   updatedAt DateTime @updatedAt
 
   user   User? @relation(fields: [userId], references: [id])
-  userId Int?
+  userId Int?  @unique
 
   items CartItem[]
 }
@@ -126,6 +135,8 @@ model CartItem {
   ingridients Ingredient[]
 }
 
+// --------------------------------------------------------------------------------
+
 model Order {
   id Int @id @default(autoincrement())
 
@@ -133,4 +144,50 @@ model Order {
   userId Int
 
   token String
+
+  totalAmount Int
+  status      OrderStatus
+  paymentId   String?
+
+  items Json
+
+  fullName String
+  address  String
+  email    String
+  phone    String
+  comment  String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+// --------------------------------------------------------------------------------
+
+model VerificationCode {
+  id Int @id @default(autoincrement())
+
+  user   User @relation(fields: [userId], references: [id])
+  userId Int  @unique
+
+  code String @unique
+
+  createdAt DateTime @default(now())
+
+  @@unique([userId, code])
+}
+
+// --------------------------------------------------------------------------------
+// --------------------------------------------------------------------------------
+// --------------------------------------------------------------------------------
+// --------------------------------------------------------------------------------
+
+enum OrderStatus {
+  PENDING
+  SUCCEEDED
+  CANCELLED
+}
+
+enum UserRole {
+  USER
+  ADMIN
 }
