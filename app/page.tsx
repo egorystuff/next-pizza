@@ -1,4 +1,4 @@
-// 06.38.00.
+// 07.01.00.
 
 import { Container, Filters, ProductCard, ProductsGroupList, Title, TopBar } from "@/components/shared";
 
