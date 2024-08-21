@@ -9,11 +9,11 @@ interface Props {
 
 export const ProductImage: React.FC<Props> = ({ imageUrl, size, className }) => {
   return (
-    <div className={cn("flex items-center justify-center flex-1 relative w-full", className)}>
+    <div className={cn("flex items-center top-2 justify-center flex-1 relative w-full", className)}>
       <img
         src={imageUrl}
         alt='product'
-        className={cn("relative left-2 top-2 transition-all z-10 duration-300", {
+        className={cn("relative left-2  transition-all z-10 duration-300", {
           "w-[300px] h-[300px]": size === 20,
           "w-[400px] h-[400px]": size === 30,
           "w-[500px] h-[500px]": size === 40,
