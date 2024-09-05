@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { Header } from "@/components/shared";
 
 export const metadata: Metadata = {
-  title: "Next Pizza",
+  title: "Next Pizza | Home",
   description: "Pizza store",
 };
 
@@ -16,8 +16,8 @@ export default function HomeLayout({
   return (
     <main className='min-h-screen'>
       <Header />
-      {children}
       {modal}
+      {children}
     </main>
   );
 }
