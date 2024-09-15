@@ -1,4 +1,4 @@
-// 10.32.00.
+// 10.57.00.
 
 import { Container, Filters, ProductsGroupList, Title, TopBar } from "@/shared/components/shared";
 import { prisma } from "@/prisma/prisma-client";
