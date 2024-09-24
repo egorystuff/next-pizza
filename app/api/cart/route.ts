@@ -1,5 +1,6 @@
 import { prisma } from "@/prisma/prisma-client";
 import { NextRequest, NextResponse } from "next/server";
+import crypto from "crypto";
 
 export async function GET(req: NextRequest) {
   try {
@@ -32,6 +33,20 @@ export async function GET(req: NextRequest) {
 
     return NextResponse.json(userCart);
   } catch (error) {
-    console.error(error);
+    console.error("Something went wrong with GET", error);
+    return NextResponse.json({ error: "Cannot get cart" }, { status: 500 });
+  }
+}
+
+export async function POST(req: NextRequest) {
+  try {
+    let token = req.cookies.get("cartToken")?.value;
+
+    if (!token) {
+      token = crypto.randomUUID();
+    }
+  } catch (error) {
+    console.error("Something went wrong with POST", error);
+    return NextResponse.json({ error: "Cannot create cart" }, { status: 500 });
   }
 }

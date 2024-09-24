@@ -2,6 +2,7 @@ import { prisma } from "@/prisma/prisma-client";
 import { updateCartTotalAmount } from "@/shared/lib/update-cart-total-amount";
 import { NextRequest, NextResponse } from "next/server";
 
+// PATCH /api/cart/:id
 export async function PATCH(req: NextRequest, { params }: { params: { id: string } }) {
   try {
     const id = Number(params.id);
@@ -31,5 +32,36 @@ export async function PATCH(req: NextRequest, { params }: { params: { id: string
   } catch (error) {
     console.error("Something went wrong with PATCH", error);
     return NextResponse.json({ error: "Cannot update cart" }, { status: 500 });
+  }
+}
+
+// DELETE /api/cart/:id
+export async function DELETE(req: NextRequest, { params }: { params: { id: string } }) {
+  try {
+    const id = Number(params.id);
+    const token = req.cookies.get("cartToken")?.value;
+
+    if (!token) {
+      return NextResponse.json({ error: "Cart token not found" });
+    }
+
+    const cartItem = await prisma.cartItem.findFirst({
+      where: { id },
+    });
+
+    if (!cartItem) {
+      return NextResponse.json({ error: "Cart item not found" });
+    }
+
+    await prisma.cartItem.delete({
+      where: { id },
+    });
+
+    const updatedUserCart = await updateCartTotalAmount(token);
+
+    return NextResponse.json(updatedUserCart);
+  } catch (error) {
+    console.error("Something went wrong with DELETE", error);
+    return NextResponse.json({ error: "Cannot delete cart" }, { status: 500 });
   }
 }
