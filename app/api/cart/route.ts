@@ -1,7 +1,11 @@
 import { prisma } from "@/prisma/prisma-client";
 import { NextRequest, NextResponse } from "next/server";
+import { findOrCreateCart } from "@/shared/lib";
+import { CreateCartItemValues } from "@/shared/services/dto/cart.dto";
+import { updateCartTotalAmount } from "@/shared/lib/update-cart-total-amount";
 import crypto from "crypto";
 
+//Get the current cart.
 export async function GET(req: NextRequest) {
   try {
     const token = req.cookies.get("cartToken")?.value;
@@ -11,22 +15,11 @@ export async function GET(req: NextRequest) {
     }
 
     const userCart = await prisma.cart.findFirst({
-      where: {
-        OR: [{ token: token }],
-      },
+      where: { OR: [{ token: token }] },
       include: {
         items: {
-          orderBy: {
-            createdAt: "desc",
-          },
-          include: {
-            productItem: {
-              include: {
-                product: true,
-              },
-            },
-            ingredients: true,
-          },
+          orderBy: { createdAt: "desc" },
+          include: { productItem: { include: { product: true } }, ingredients: true },
         },
       },
     });
@@ -38,6 +31,7 @@ export async function GET(req: NextRequest) {
   }
 }
 
+//Create a new cart item.
 export async function POST(req: NextRequest) {
   try {
     let token = req.cookies.get("cartToken")?.value;
@@ -45,6 +39,46 @@ export async function POST(req: NextRequest) {
     if (!token) {
       token = crypto.randomUUID();
     }
+
+    const userCart = await findOrCreateCart(token);
+
+    const data = (await req.json()) as CreateCartItemValues;
+
+    const findCartItem = await prisma.cartItem.findFirst({
+      where: {
+        cartId: userCart.id,
+        productItemId: data.productItemId,
+        ingredients: { every: { id: { in: data.ingredients } } },
+      },
+    });
+
+    if (findCartItem) {
+      await prisma.cartItem.update({
+        where: { id: findCartItem.id },
+        data: { quantity: findCartItem.quantity + 1 },
+      });
+    }
+
+    await prisma.cartItem.create({
+      data: {
+        cartId: userCart.id,
+        productItemId: data.productItemId,
+        quantity: 1,
+        ingredients: { connect: data.ingredients?.map((id) => ({ id })) },
+      },
+    });
+
+    const updatedUserCart = await updateCartTotalAmount(token);
+    const resp = NextResponse.json(updatedUserCart);
+
+    resp.cookies.set("cartToken", token, {
+      maxAge: 60 * 60 * 24 * 7,
+      httpOnly: true,
+      sameSite: "strict",
+      path: "/",
+    });
+
+    return resp;
   } catch (error) {
     console.error("Something went wrong with POST", error);
     return NextResponse.json({ error: "Cannot create cart" }, { status: 500 });
