@@ -1,7 +1,7 @@
 "use client";
 
-import { cn } from "@/shared/lib/utils";
 import React from "react";
+import { cn } from "@/shared/lib/utils";
 import { Ingredient, ProductItem } from "@prisma/client";
 import { Title } from "./title";
 import { Button } from "../ui";
@@ -13,18 +13,25 @@ import { getPizzaDetails } from "@/shared/lib";
 interface Props {
   imageUrl: string;
   name: string;
-  className?: string;
   ingredients: Ingredient[];
   items: ProductItem[];
-  onClickAddCart?: VoidFunction;
+  onSubmit: (itemId: number, ingredients: number[]) => void;
+  className?: string;
 }
 
-export const ChoosePizzaForm: React.FC<Props> = ({ name, items, imageUrl, ingredients, onClickAddCart, className }) => {
-  const { size, type, selectedIngredients, availableSizes, setSize, setType, addIngredient } = usePizzaOptions(items);
+//Form for choose PIZZA
+
+export const ChoosePizzaForm: React.FC<Props> = ({ name, items, imageUrl, ingredients, onSubmit, className }) => {
+  const { size, type, selectedIngredients, availableSizes, currentItemId, setSize, setType, addIngredient } =
+    usePizzaOptions(items);
 
   const { totalPrice, textDetaills } = getPizzaDetails(size, type, items, ingredients, selectedIngredients);
 
-  const handleClickAddCart = () => onClickAddCart?.();
+  const handleClickAddCart = () => {
+    if (currentItemId) {
+      onSubmit(currentItemId, Array.from(selectedIngredients));
+    }
+  };
 
   return (
     <div className={cn(className, "flex flex-1")}>
