@@ -29,59 +29,104 @@ export const findPizzas = async (params: GetSearchParams) => {
   const limit = Number(params.limit || DEFAULT_LIMIT);
   const page = Number(params.page || DEFAULT_PAGE);
 
-  const result = await prisma.category
-    .paginate({
-      include: {
-        products: {
-          orderBy: {
-            id: "desc",
-          },
-          where: {
-            ingredients: ingredientsIdArr
-              ? {
-                  some: {
-                    id: {
-                      in: ingredientsIdArr,
-                    },
+  // const result = await prisma.category
+  //   .paginate({
+  //     include: {
+  //       products: {
+  //         orderBy: {
+  //           id: "desc",
+  //         },
+  //         where: {
+  //           ingredients: ingredientsIdArr
+  //             ? {
+  //                 some: {
+  //                   id: {
+  //                     in: ingredientsIdArr,
+  //                   },
+  //                 },
+  //               }
+  //             : undefined,
+  //           items: {
+  //             some: {
+  //               size: {
+  //                 in: sizes,
+  //               },
+  //               pizzaType: {
+  //                 in: pizzaTypes,
+  //               },
+  //               price: {
+  //                 gte: minPrice,
+  //                 lte: maxPrice,
+  //               },
+  //             },
+  //           },
+  //         },
+  //         include: {
+  //           items: {
+  //             where: {
+  //               price: {
+  //                 gte: minPrice,
+  //                 lte: maxPrice,
+  //               },
+  //             },
+  //             orderBy: {
+  //               price: "asc",
+  //             },
+  //           },
+  //         },
+  //       },
+  //     },
+  //   })
+  //   .withPages({
+  //     page,
+  //     limit,
+  //     includePageCount: true,
+  //   });
+
+  const result = await prisma.category.findMany({
+    include: {
+      products: {
+        orderBy: {
+          id: "desc",
+        },
+        where: {
+          ingredients: ingredientsIdArr
+            ? {
+                some: {
+                  id: {
+                    in: ingredientsIdArr,
                   },
-                }
-              : undefined,
-            items: {
-              some: {
-                size: {
-                  in: sizes,
                 },
-                pizzaType: {
-                  in: pizzaTypes,
-                },
-                price: {
-                  gte: minPrice,
-                  lte: maxPrice,
-                },
+              }
+            : undefined,
+          items: {
+            some: {
+              size: {
+                in: sizes,
+              },
+              pizzaType: {
+                in: pizzaTypes,
+              },
+              price: {
+                gte: minPrice,
+                lte: maxPrice,
               },
             },
           },
-          include: {
-            items: {
-              where: {
-                price: {
-                  gte: minPrice,
-                  lte: maxPrice,
-                },
-              },
-              orderBy: {
-                price: "asc",
+        },
+        include: {
+          items: {
+            where: {
+              price: {
+                gte: minPrice,
+                lte: maxPrice,
               },
             },
           },
         },
       },
-    })
-    .withPages({
-      page,
-      limit,
-      includePageCount: true,
-    });
+    },
+  });
 
   return result;
 };

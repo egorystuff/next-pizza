@@ -19,32 +19,45 @@ export const ChooseProductModal: React.FC<Props> = ({ className, product }) => {
   const router = useRouter();
   const firstItem = product.items[0];
   const isPizzaForm = Boolean(firstItem.pizzaType);
-  const addCartItem = useCartStore((state) => state.addCartItem);
+  const [addCartItem, loading] = useCartStore((state) => [state.addCartItem, state.loading]);
 
-  const onAddProduct = () => {
-    addCartItem({
-      productItemId: firstItem.id,
-    });
-  };
+  // const onAddProduct = async () => {
+  //   try {
+  //     await addCartItem({ productItemId: firstItem.id });
+  //     toast.success("Added product to cart");
+  //     router.back();
+  //   } catch (error) {
+  //     toast.error("Something went wrong");
+  //     console.error(error);
+  //   }
+  // };
 
-  const onAddPizza = async (productItemId: number, ingredients: number[]) => {
+  // const onAddPizza = async (productItemId: number, ingredients: number[]) => {
+  //   try {
+  //     await addCartItem({ productItemId, ingredients });
+  //     toast.success("Added pizza to cart");
+  //     router.back();
+  //   } catch (error) {
+  //     toast.error("Something went wrong");
+  //     console.error(error);
+  //   }
+  // };
+
+  const onSubmit = async (productItemId?: number, ingredients?: number[]) => {
     try {
-      await addCartItem({ productItemId, ingredients });
-      toast.success("Added to cart");
+      if (isPizzaForm) {
+        await addCartItem({ productItemId, ingredients });
+      } else {
+        await addCartItem({ productItemId: firstItem.id });
+      }
+
+      toast.success(`${product.name} добавлен в корзину`);
       router.back();
     } catch (error) {
-      toast.error("Something went wrong");
+      toast.error("Упс, что-то пошло не так");
       console.error(error);
     }
   };
-
-  // const onSubmitProduct = () => {
-  //   if (isPizzaForm) {
-  //     onAddPizza(firstItem.id, []);
-  //   } else {
-  //     onAddProduct();
-  //   }
-  // };
 
   return (
     <Dialog open={Boolean(product)} onOpenChange={() => router.back()}>
@@ -55,14 +68,16 @@ export const ChooseProductModal: React.FC<Props> = ({ className, product }) => {
             name={product.name}
             ingredients={product.ingredients}
             items={product.items}
-            onSubmit={onAddPizza}
+            onSubmit={onSubmit}
+            loading={loading}
           />
         ) : (
           <ChooseProductForm
             imageUrl={product.imageUrl}
             name={product.name}
-            onSubmit={onAddProduct}
+            onSubmit={() => onSubmit()}
             price={firstItem.price}
+            loading={loading}
           />
         )}
       </DialogContent>
