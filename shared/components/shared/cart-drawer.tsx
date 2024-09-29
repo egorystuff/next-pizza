@@ -18,6 +18,7 @@ import { CartDrawerItem } from "./cart-drawer-item";
 import { getCartItemDetails } from "@/shared/lib";
 import { useCartStore } from "@/shared/store/cart";
 import { PizzaSize, PizzaType } from "@/shared/constants/pizza";
+import toast from "react-hot-toast";
 
 interface Props {
   className?: string;
@@ -69,7 +70,10 @@ export const CartDrawer: React.FC<React.PropsWithChildren<Props>> = ({ children,
                 price={item.price}
                 quantity={item.quantity}
                 onClickCountButton={(type: "plus" | "minus") => onClickCountButton(item.id, item.quantity, type)}
-                onClickRemove={() => removeCartItem(item.id)}
+                onClickRemove={async () => {
+                  await removeCartItem(item.id);
+                  toast.error(`${item.name} удален из корзины`);
+                }}
               />
             </div>
           ))}

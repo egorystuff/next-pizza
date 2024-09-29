@@ -8,15 +8,10 @@ export interface GetSearchParams {
   ingredients?: string;
   priceFrom?: string;
   priceTo?: string;
-  limit?: string;
-  page?: string;
 }
 
 const DEFAULT_MIN_PRICE = 0;
-const DEFAULT_MAX_PRICE = 1000;
-
-const DEFAULT_LIMIT = 12;
-const DEFAULT_PAGE = 1;
+const DEFAULT_MAX_PRICE = 100;
 
 export const findPizzas = async (params: GetSearchParams) => {
   const ingredientsIdArr = params.ingredients?.split(",").map(Number);
@@ -26,63 +21,6 @@ export const findPizzas = async (params: GetSearchParams) => {
   const minPrice = Number(params.priceFrom) || DEFAULT_MIN_PRICE;
   const maxPrice = Number(params.priceTo) || DEFAULT_MAX_PRICE;
 
-  const limit = Number(params.limit || DEFAULT_LIMIT);
-  const page = Number(params.page || DEFAULT_PAGE);
-
-  // const result = await prisma.category
-  //   .paginate({
-  //     include: {
-  //       products: {
-  //         orderBy: {
-  //           id: "desc",
-  //         },
-  //         where: {
-  //           ingredients: ingredientsIdArr
-  //             ? {
-  //                 some: {
-  //                   id: {
-  //                     in: ingredientsIdArr,
-  //                   },
-  //                 },
-  //               }
-  //             : undefined,
-  //           items: {
-  //             some: {
-  //               size: {
-  //                 in: sizes,
-  //               },
-  //               pizzaType: {
-  //                 in: pizzaTypes,
-  //               },
-  //               price: {
-  //                 gte: minPrice,
-  //                 lte: maxPrice,
-  //               },
-  //             },
-  //           },
-  //         },
-  //         include: {
-  //           items: {
-  //             where: {
-  //               price: {
-  //                 gte: minPrice,
-  //                 lte: maxPrice,
-  //               },
-  //             },
-  //             orderBy: {
-  //               price: "asc",
-  //             },
-  //           },
-  //         },
-  //       },
-  //     },
-  //   })
-  //   .withPages({
-  //     page,
-  //     limit,
-  //     includePageCount: true,
-  //   });
-
   const result = await prisma.category.findMany({
     include: {
       products: {
@@ -90,38 +28,20 @@ export const findPizzas = async (params: GetSearchParams) => {
           id: "desc",
         },
         where: {
-          ingredients: ingredientsIdArr
-            ? {
-                some: {
-                  id: {
-                    in: ingredientsIdArr,
-                  },
-                },
-              }
-            : undefined,
+          ingredients: ingredientsIdArr ? { some: { id: { in: ingredientsIdArr } } } : undefined,
           items: {
             some: {
-              size: {
-                in: sizes,
-              },
-              pizzaType: {
-                in: pizzaTypes,
-              },
-              price: {
-                gte: minPrice,
-                lte: maxPrice,
-              },
+              size: { in: sizes },
+              pizzaType: { in: pizzaTypes },
+              price: { gte: minPrice, lte: maxPrice },
             },
           },
         },
         include: {
+          ingredients: true,
           items: {
-            where: {
-              price: {
-                gte: minPrice,
-                lte: maxPrice,
-              },
-            },
+            where: { price: { gte: minPrice, lte: maxPrice } },
+            orderBy: { price: "asc" },
           },
         },
       },
