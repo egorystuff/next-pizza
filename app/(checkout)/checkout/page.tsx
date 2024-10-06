@@ -1,5 +1,6 @@
-import { Container, Title, WhiteBlock } from "@/shared/components/shared";
-import { Input, Textarea } from "@/shared/components/ui";
+import { CheckoutItem, CheckoutItemDetails, Container, Title, WhiteBlock } from "@/shared/components/shared";
+import { Button, Input, Textarea } from "@/shared/components/ui";
+import { ArrowRight, Package, Percent, Truck } from "lucide-react";
 
 export default function CheckoutPage() {
   return (
@@ -9,7 +10,16 @@ export default function CheckoutPage() {
       <div className='flex gap-10'>
         {/* left block */}
         <div className='flex flex-col gap-10 flex-1 mb-20'>
-          <WhiteBlock title='1. Корзина'>ваыаыаыва</WhiteBlock>
+          <WhiteBlock title='1. Корзина'>
+            <CheckoutItem
+              id={1}
+              imageUrl={""}
+              details={"сыр пармезан оригинальный 120г"}
+              name={"сырная пармезановая"}
+              price={35}
+              quantity={5}
+            />
+          </WhiteBlock>
 
           <WhiteBlock title='2. Персональные данные'>
             <div className='grid grid-cols-2 gap-5'>
@@ -35,17 +45,41 @@ export default function CheckoutPage() {
           <WhiteBlock className='p-6 sticky top-4'>
             <div className='flex flex-col gap-1'>
               <span className='text-xl'>Итого:</span>
-              <span className='h-11 text-[34px] font-extrabold'>35 BYN</span>
+              <span className='h-11 text-[34px] font-extrabold'>40 BYN</span>
             </div>
 
-            <div className='flex my-4'>
-              <span className='flex flex-1 text-lg text-neutral-500'>
-                Стоимость товаров:
-                <div className='flex-1 border-b border-dashed border-b-neutral-200 relative -top-1 mx-2' />
-              </span>
+            <CheckoutItemDetails
+              title={
+                <div className='flex items-center'>
+                  <Package size={20} className='mr-2 text-gray-300' />
+                  Стоимость товаров
+                </div>
+              }
+              value='35 BYN'
+            />
+            <CheckoutItemDetails
+              title={
+                <div className='flex items-center'>
+                  <Percent size={20} className='mr-2 text-gray-300' />
+                  НДС
+                </div>
+              }
+              value='2 BYN'
+            />
+            <CheckoutItemDetails
+              title={
+                <div className='flex items-center'>
+                  <Truck size={20} className='mr-2 text-gray-300' />
+                  Доставка
+                </div>
+              }
+              value='5 BYN'
+            />
 
-              <span className='font-bold text-lg'>85 BYN</span>
-            </div>
+            <Button type='submit' className='w-full h-14 rounded-2xl mt-6 text-base font-bold'>
+              Перейти к оплате
+              <ArrowRight size={20} className='mr-2' />
+            </Button>
           </WhiteBlock>
         </div>
       </div>
