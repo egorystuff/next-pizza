@@ -1,8 +1,21 @@
+"use client";
+
+import { ArrowRight, Package, Percent, Truck } from "lucide-react";
+import { useCart } from "@/shared/hooks";
+import { getCartItemDetails } from "@/shared/lib";
 import { CheckoutItem, CheckoutItemDetails, Container, Title, WhiteBlock } from "@/shared/components/shared";
 import { Button, Input, Textarea } from "@/shared/components/ui";
-import { ArrowRight, Package, Percent, Truck } from "lucide-react";
+import { PizzaSize, PizzaType } from "@/shared/constants/pizza";
+import toast from "react-hot-toast";
 
 export default function CheckoutPage() {
+  const { totalAmount, items, updateItemQuantity, removeCartItem } = useCart();
+
+  const onClickCountButton = (id: number, quantity: number, type: "plus" | "minus") => {
+    const newQuantity = type === "plus" ? quantity + 1 : quantity - 1;
+    updateItemQuantity(id, newQuantity);
+  };
+
   return (
     <Container className='mt-10'>
       <Title text='Оформление заказа' className='font-extrabold mb-8 text-[36px]' />
@@ -11,14 +24,29 @@ export default function CheckoutPage() {
         {/* left block */}
         <div className='flex flex-col gap-10 flex-1 mb-20'>
           <WhiteBlock title='1. Корзина'>
-            <CheckoutItem
-              id={1}
-              imageUrl={""}
-              details={"сыр пармезан оригинальный 120г"}
-              name={"сырная пармезановая"}
-              price={35}
-              quantity={5}
-            />
+            <div className='flex flex-col gap-5'>
+              {items.map((item) => (
+                <CheckoutItem
+                  key={item.id}
+                  id={item.id}
+                  imageUrl={item.imageUrl}
+                  details={getCartItemDetails(
+                    item.ingredients,
+                    item.pizzaType as PizzaType,
+                    item.pizzaSize as PizzaSize,
+                  )}
+                  name={item.name}
+                  price={item.price}
+                  quantity={item.quantity}
+                  disabled={item.disabled}
+                  onClickCountButton={(type: "plus" | "minus") => onClickCountButton(item.id, item.quantity, type)}
+                  onClickRemove={async () => {
+                    await removeCartItem(item.id);
+                    toast.error(`${item.name} удален из корзины`);
+                  }}
+                />
+              ))}
+            </div>
           </WhiteBlock>
 
           <WhiteBlock title='2. Персональные данные'>
@@ -45,7 +73,7 @@ export default function CheckoutPage() {
           <WhiteBlock className='p-6 sticky top-4'>
             <div className='flex flex-col gap-1'>
               <span className='text-xl'>Итого:</span>
-              <span className='h-11 text-[34px] font-extrabold'>40 BYN</span>
+              <span className='h-11 text-[34px] font-extrabold'>{totalAmount} BYN</span>
             </div>
 
             <CheckoutItemDetails
