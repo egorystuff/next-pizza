@@ -2,7 +2,7 @@ import { cn } from "@/shared/lib/utils";
 import React from "react";
 
 interface Props {
-  text: string;
+  text?: string;
   className?: string;
 }
 
