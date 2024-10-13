@@ -13,11 +13,12 @@ import {
   Container,
   Title,
 } from "@/shared/components/shared";
+import { cn } from "@/shared/lib/utils";
 
 //------------------------------------------------------------------------------------------------------------------------
 
 export default function CheckoutPage() {
-  const { totalAmount, items, updateItemQuantity, removeCartItem } = useCart();
+  const { totalAmount, items, updateItemQuantity, removeCartItem, loading } = useCart();
 
   const form = useForm<CheckoutFormValues>({
     resolver: zodResolver(CheckoutFormSchema),
@@ -49,17 +50,22 @@ export default function CheckoutPage() {
           <div className='flex gap-10'>
             {/* left block */}
             <div className='flex flex-col gap-10 flex-1 mb-20'>
-              <CheckoutCart items={items} onClickCountButton={onClickCountButton} removeCartItem={removeCartItem} />
+              <CheckoutCart
+                items={items}
+                onClickCountButton={onClickCountButton}
+                removeCartItem={removeCartItem}
+                loading={loading}
+              />
 
-              <CheckoutPersonalForm />
+              <CheckoutPersonalForm className={loading ? "opacity-50 pointer-events-none" : ""} />
 
-              <CheckoutAdressForm />
+              <CheckoutAdressForm className={loading ? "opacity-50 pointer-events-none" : ""} />
             </div>
 
             {/* right block */}
 
             <div className='w-[450px]'>
-              <CheckoutSidebar totalAmount={totalAmount} />
+              <CheckoutSidebar totalAmount={totalAmount} loading={loading} />
             </div>
           </div>
         </form>

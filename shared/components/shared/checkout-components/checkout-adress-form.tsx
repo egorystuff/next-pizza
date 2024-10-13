@@ -6,6 +6,7 @@ import { Controller, useFormContext } from "react-hook-form";
 import { ErrorText } from "../error-text";
 
 interface Props {
+  disabled?: boolean;
   className?: string;
 }
 
@@ -13,7 +14,7 @@ export const CheckoutAdressForm: React.FC<Props> = ({ className }) => {
   const { control } = useFormContext();
 
   return (
-    <WhiteBlock title='3. Адрес доставки'>
+    <WhiteBlock className={className} title='3. Адрес доставки'>
       <div className='flex flex-col gap-5'>
         <Controller
           name='address'
