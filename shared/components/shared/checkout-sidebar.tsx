@@ -53,7 +53,7 @@ export const CheckoutSidebar: React.FC<Props> = ({ className, loading, totalAmou
         value={loading ? <Skeleton className='h-6 w-10' /> : `${DELIVERY_PRICE}`}
       />
 
-      <Button type='submit' className='w-full h-14 rounded-2xl mt-6 text-base font-bold'>
+      <Button loading={loading} type='submit' className='w-full h-14 rounded-2xl mt-6 text-base font-bold'>
         Перейти к оплате
         <ArrowRight size={20} className='mr-2' />
       </Button>

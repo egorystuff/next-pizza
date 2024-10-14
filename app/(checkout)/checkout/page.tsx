@@ -1,8 +1,11 @@
 "use client";
 
+import React from "react";
+import { cn } from "@/shared/lib/utils";
 import { FormProvider, SubmitHandler, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useCart } from "@/shared/hooks";
+import { createOrder } from "@/app/actions";
 import {
   CheckoutAdressForm,
   CheckoutCart,
@@ -13,11 +16,12 @@ import {
   Container,
   Title,
 } from "@/shared/components/shared";
-import { cn } from "@/shared/lib/utils";
+import toast from "react-hot-toast";
 
 //------------------------------------------------------------------------------------------------------------------------
 
 export default function CheckoutPage() {
+  const [submitting, setSubmitting] = React.useState(false);
   const { totalAmount, items, updateItemQuantity, removeCartItem, loading } = useCart();
 
   const form = useForm<CheckoutFormValues>({
@@ -32,8 +36,22 @@ export default function CheckoutPage() {
     },
   });
 
-  const onSubmit: SubmitHandler<CheckoutFormValues> = (data) => {
-    console.log(data);
+  const onSubmit = async (data: CheckoutFormValues) => {
+    try {
+      setSubmitting(true);
+      const url = await createOrder(data);
+      toast.success("Заказ оформлен. Переход к оплате...", { icon: "✅" });
+
+      if (url !== undefined) {
+        window.location.href = url;
+      } else {
+        toast.error("Что-то пошло не так", { icon: "❌" });
+      }
+    } catch (error) {
+      toast.error("Что-то пошло не так", { icon: "❌" });
+      setSubmitting(false);
+      console.error(error);
+    }
   };
 
   const onClickCountButton = (id: number, quantity: number, type: "plus" | "minus") => {
@@ -65,7 +83,7 @@ export default function CheckoutPage() {
             {/* right block */}
 
             <div className='w-[450px]'>
-              <CheckoutSidebar totalAmount={totalAmount} loading={loading} />
+              <CheckoutSidebar totalAmount={totalAmount} loading={loading || submitting} />
             </div>
           </div>
         </form>
