@@ -1,7 +1,8 @@
 "use server";
 
 import { prisma } from "@/prisma/prisma-client";
-import { CheckoutFormValues } from "@/shared/components/shared";
+import { CheckoutFormValues, PayOrderTemplate } from "@/shared/components/shared";
+import { sendEmail } from "@/shared/lib";
 import { OrderStatus } from "@prisma/client";
 import { cookies } from "next/headers";
 
@@ -11,7 +12,7 @@ import { cookies } from "next/headers";
  * @param data - form data from checkout page
  * @returns url for redirect to payment system or undefined if something went wrong
  */
-export async function createOrder(data: CheckoutFormValues): Promise<string | undefined> {
+export async function createOrder(data: CheckoutFormValues) {
   try {
     const cookiesStore = cookies();
 
@@ -82,8 +83,20 @@ export async function createOrder(data: CheckoutFormValues): Promise<string | un
     });
 
     // return url for redirect to payment system
-    return `/payment?orderId=${order.id}`;
+
+    await sendEmail(
+      data.email,
+      `NextPizza / Заказ No${order.id}`,
+      PayOrderTemplate({
+        orderId: order.id,
+        totalAmount: order.totalAmount,
+        paymentUrl: `https://resend.com/docs/send-with-nextjs`,
+      }),
+    );
+
+    // return `/payment?orderId=${order.id}`;
+    // re_Cazc3DUA_JGrS2sDLASs1n7N8eXkEovRK
   } catch (error) {
-    console.error(error);
+    console.error("[createOrder] Server error:", error);
   }
 }

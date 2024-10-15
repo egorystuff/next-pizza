@@ -1,4 +1,4 @@
-// 18.18.00.
+// 18.33.00.
 
 import { Suspense } from "react";
 import { Container, Filters, ProductsGroupList, Title, TopBar } from "@/shared/components/shared";
