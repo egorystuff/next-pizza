@@ -27,28 +27,46 @@ export default function CheckoutPage() {
   const form = useForm<CheckoutFormValues>({
     resolver: zodResolver(CheckoutFormSchema),
     defaultValues: {
+      email: "",
       firstName: "",
       lastName: "",
-      email: "",
       phone: "",
       address: "",
       comment: "",
     },
   });
 
+  // React.useEffect(() => {
+  //   async function fetchUserInfo() {
+  //     const data = await Api.auth.getMe();
+  //     const [firstName, lastName] = data.fullName.split(" ");
+
+  //     form.setValue("firstName", firstName);
+  //     form.setValue("lastName", lastName);
+  //     form.setValue("email", data.email);
+  //   }
+
+  //   if (session) {
+  //     fetchUserInfo();
+  //   }
+  // }, [session]);
+
   const onSubmit = async (data: CheckoutFormValues) => {
     try {
       setSubmitting(true);
+
       const url = await createOrder(data);
+
       toast.success("Заказ оформлен. Переход к оплате...", { icon: "✅" });
 
-      if (url !== undefined) {
-        window.location.href = url;
+      if (url) {
+        location.href = url;
       } else {
-        toast.error("Что-то пошло не так", { icon: "❌" });
+        toast.error("Что-то пошло не так 1", { icon: "❌" });
+        console.log(url);
       }
     } catch (error) {
-      toast.error("Что-то пошло не так", { icon: "❌" });
+      toast.error("Что-то пошло не так 2", { icon: "❌" });
       setSubmitting(false);
       console.error(error);
     }

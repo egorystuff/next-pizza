@@ -82,17 +82,38 @@ export async function createOrder(data: CheckoutFormValues) {
       },
     });
 
+    // const paymentData = await createPayment({
+    //   amount: order.totalAmount,
+    //   orderId: order.id,
+    //   description: "Оплата заказа #" + order.id,
+    // });
+
+    // if (!paymentData) {
+    //   throw new Error("Payment data not found");
+    // }
+
+    // await prisma.order.update({
+    //   where: {
+    //     id: order.id,
+    //   },
+    //   data: {
+    //     paymentId: paymentData.id,
+    //   },
+    // });
+
     // return url for redirect to payment system
 
     await sendEmail(
       data.email,
-      `NextPizza / Заказ No${order.id}`,
+      "Next Pizza / Оплатите заказ #" + order.id,
       PayOrderTemplate({
         orderId: order.id,
         totalAmount: order.totalAmount,
         paymentUrl: `https://resend.com/docs/send-with-nextjs`,
       }),
     );
+
+    return `https://resend.com/docs/send-with-nextjs`;
 
     // return `/payment?orderId=${order.id}`;
     // re_Cazc3DUA_JGrS2sDLASs1n7N8eXkEovRK
