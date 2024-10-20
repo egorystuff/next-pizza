@@ -16,12 +16,27 @@ interface Props {
 }
 
 export const CheckoutCart: React.FC<Props> = ({ className, items, loading, onClickCountButton, removeCartItem }) => {
+  const [localLoading, setLocalLoading] = React.useState(false);
+  const [firstRender, setFirstRender] = React.useState(false);
+
+  React.useEffect(() => {
+    setFirstRender(true);
+  }, []);
+
+  React.useEffect(() => {
+    if (firstRender) {
+      setLocalLoading(false);
+    } else {
+      setLocalLoading(true);
+    }
+  }, [loading]);
+
   return (
     <WhiteBlock className={className} title='1. Корзина'>
       <div className='flex flex-col gap-4'>
-        {loading && [...Array(3)].map((_, index) => <CheckoutItemSkeleton key={index} />)}
+        {localLoading && [...Array(3)].map((_, index) => <CheckoutItemSkeleton key={index} />)}
 
-        {!loading &&
+        {!localLoading &&
           items.length > 0 &&
           items.map((item) => (
             <CheckoutItem

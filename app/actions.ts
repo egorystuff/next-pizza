@@ -2,7 +2,7 @@
 
 import { prisma } from "@/prisma/prisma-client";
 import { CheckoutFormValues, PayOrderTemplate } from "@/shared/components/shared";
-import { sendEmail } from "@/shared/lib";
+import { createPayment, sendEmail } from "@/shared/lib";
 import { OrderStatus } from "@prisma/client";
 import { cookies } from "next/headers";
 
@@ -14,15 +14,14 @@ import { cookies } from "next/headers";
  */
 export async function createOrder(data: CheckoutFormValues) {
   try {
-    const cookiesStore = cookies();
-
-    const cartToken = cookiesStore.get("cartToken")?.value;
+    const cookieStore = cookies();
+    const cartToken = cookieStore.get("cartToken")?.value;
 
     if (!cartToken) {
       throw new Error("Cart token not found");
     }
 
-    // find user cart by token
+    // Находим корзину по токену
     const userCart = await prisma.cart.findFirst({
       include: {
         user: true,
@@ -42,15 +41,17 @@ export async function createOrder(data: CheckoutFormValues) {
       },
     });
 
+    // Если корзина не найдена возращаем ошибку
     if (!userCart) {
       throw new Error("Cart not found");
     }
 
+    // Если корзина пустая возращаем ошибку
     if (userCart?.totalAmount === 0) {
       throw new Error("Cart is empty");
     }
 
-    // create order with user data
+    // Создаем заказ
     const order = await prisma.order.create({
       data: {
         token: cartToken,
@@ -65,7 +66,7 @@ export async function createOrder(data: CheckoutFormValues) {
       },
     });
 
-    // clear user cart and cart items
+    // Очищаем корзину
     await prisma.cart.update({
       where: {
         id: userCart.id,
@@ -75,49 +76,47 @@ export async function createOrder(data: CheckoutFormValues) {
       },
     });
 
-    // delete all cart items
     await prisma.cartItem.deleteMany({
       where: {
         cartId: userCart.id,
       },
     });
 
-    // const paymentData = await createPayment({
-    //   amount: order.totalAmount,
-    //   orderId: order.id,
-    //   description: "Оплата заказа #" + order.id,
-    // });
+    // Создаем ссылку на оплату заказа
+    const paymentData = await createPayment({
+      amount: order.totalAmount,
+      orderId: order.id,
+      description: "Оплата заказа #" + order.id,
+    });
 
-    // if (!paymentData) {
-    //   throw new Error("Payment data not found");
-    // }
+    if (!paymentData) {
+      throw new Error("Payment data not found");
+    }
 
-    // await prisma.order.update({
-    //   where: {
-    //     id: order.id,
-    //   },
-    //   data: {
-    //     paymentId: paymentData.id,
-    //   },
-    // });
+    await prisma.order.update({
+      where: {
+        id: order.id,
+      },
+      data: {
+        paymentId: paymentData.id,
+      },
+    });
 
-    // return url for redirect to payment system
+    const paymentUrl = paymentData.confirmation.confirmation_url;
 
+    // Отправляем письмо пользователю
     await sendEmail(
       data.email,
       "Next Pizza / Оплатите заказ #" + order.id,
       PayOrderTemplate({
         orderId: order.id,
         totalAmount: order.totalAmount,
-        paymentUrl: `https://resend.com/docs/send-with-nextjs`,
+        paymentUrl,
       }),
     );
 
-    return `https://resend.com/docs/send-with-nextjs`;
-
-    // return `/payment?orderId=${order.id}`;
-    // re_Cazc3DUA_JGrS2sDLASs1n7N8eXkEovRK
-  } catch (error) {
-    console.error("[createOrder] Server error:", error);
+    return paymentUrl;
+  } catch (err) {
+    console.log("[CreateOrder] Server error", err);
   }
 }
