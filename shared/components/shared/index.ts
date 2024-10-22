@@ -32,6 +32,7 @@ export { ErrorText } from "./error-text";
 export { ClearButton } from "./clear-button";
 export { AdressInput } from "./adress-input";
 
+export * from "./email-templates/index";
 export * from "./checkout-components/index";
 export * from "./form-components/index";
 export * from "./modals/index";
