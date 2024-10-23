@@ -31,6 +31,8 @@ export { RequiredSymbol } from "./required-symbol";
 export { ErrorText } from "./error-text";
 export { ClearButton } from "./clear-button";
 export { AdressInput } from "./adress-input";
+export { Providers } from "./providers";
+export { ProfileButton } from "./profile-button";
 
 export * from "./email-templates/index";
 export * from "./checkout-components/index";
