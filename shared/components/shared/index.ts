@@ -33,6 +33,8 @@ export { ClearButton } from "./clear-button";
 export { AdressInput } from "./adress-input";
 export { Providers } from "./providers";
 export { ProfileButton } from "./profile-button";
+export { ProfileForm } from "./profile-form";
+export { InfoBlock } from "./info-block";
 
 export * from "./email-templates/index";
 export * from "./checkout-components/index";
